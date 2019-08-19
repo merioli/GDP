@@ -1,0 +1,144 @@
+﻿@model GDPProject.Models.RootObjectFilter
+
+@using System.Data.Entity
+
+
+@{
+    ViewBag.Title = "productdetail";
+    Layout = "~/Views/Shared/_LayoutPanelAdmin.cshtml";
+}
+@section header{
+}
+@section scripts{
+    <script>
+        $("#getfeature").click(function () {
+
+            var catID = $("#maincat").val();
+
+            if (catID != "" && catID != "0") {
+                $.ajax({
+                    url: '/Admin/getfeature',
+                    dataType: 'html',
+                    data: {
+                        catID: catID,
+
+                    },
+                    success: function (data) {
+                        $("#featureholder").html(data);
+                    },
+                    error: function () {
+                        alert("خطا")
+                    }
+                });
+
+            }
+            else {
+                toastr.options = {
+                    "debug": false,
+                    "positionClass": "toast-top-center",
+                    "onclick": null,
+                    "fadeIn": 300,
+                    "fadeOut": 1000,
+                    "timeOut": 5000,
+                    "extendedTimeOut": 1000
+                }
+
+                toastr.error(' دسترسی جهت دسته بندی مورد نظر وجود ندارد ')
+            }
+
+        })
+
+    </script>
+}
+<div class="row">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            
+
+            <div class="x_content">
+                <br />
+                <div id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+
+
+                    <div class="holderofformgroup" style="direction: rtl;text-align: right;padding: 20px;border: 1px solid #ddd;background-color: white;border-radius: 10px;">
+                        <div class="form-group rowholder">
+                            
+                         
+                            <label style="width:100%; margin-bottom:15px; font:bold; margin-left:20px; display:inline-block" class="control-label component" for="first-name">
+                                انتخاب دسته بندی -
+                            </label>
+                            @{
+                                IEnumerable<SelectListItem> items = Model.filtersModel.Select(c => new SelectListItem
+                                {
+                                    Value = c.ID,
+                                    Text = c.title
+
+                                });
+                                <div class="component " style="display:inline-block; margin-left:15px">
+                                    @Html.DropDownList("maincat", items, "-- Select Status --", new { id = "maincat", style = " display:inline-block", @class = "DRPd form-control" })
+                                </div>
+                            }
+
+
+
+
+
+                            <div class="component " style="direction:rtl; display:inline-block">
+
+                                @* <button id="DEFcatok" class="btn btn-success" onclick="DEFcatokclicked(DEFcatok)">تایید</button>*@
+                                <button id="getfeature" class="btn btn-success">تایید</button>
+
+
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="ln_solid"></div>
+                </div>
+                
+                <div id="featureholder">
+
+                </div>
+
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+<script src="//code.jquery.com/jquery-3.2.1.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

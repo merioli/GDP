@@ -1,0 +1,78 @@
+﻿@model AdminPanel.ViewModel.FeaturDataList
+
+@{
+    if (Model.featurDataDetail != null && Model.featurDataDetail.Count() > 0)
+    {
+        foreach (var myitem in Model.featurDataDetail)
+        {
+            if (myitem.value == "Master")
+            {
+                  <div id="filtersholder" class="form-group rowholder" style="box-shadow:none; font-size:18px">
+                <label class="control-label col-md-4 col-sm-4 col-xs-12" style="text-align: right">
+                    @myitem.title :
+                </label>
+                      <input value="@myitem.value" class="control-label col-md-8 col-sm-8 col-xs-12 featureInput" id="@myitem.title" type="text" style="display:none" />
+            </div>
+            }
+            else
+            {
+                   <div id="filtersholder" class="form-group rowholder">
+                <label class="control-label col-md-4 col-sm-4 col-xs-12" style="text-align: right">
+                    @myitem.title :
+                </label>
+                <input value="@myitem.value" class="control-label col-md-8 col-sm-8 col-xs-12 featureInput" id="@myitem.title" type="text" />
+            
+
+                  @*<script>
+                    $(document).ready(function () {
+                        var ID = "@myitem.ID";
+                        var filterdetaillist = "DEFfilterdetaillist" + ID;
+                        var filterVALUE = $("#" + filterdetaillist + " option:selected").val();
+                        //$("#allfilterid").append(ID + "-" + filterVALUE + ",");
+                        $('.featureInput').on('change', function () {
+                            //alert($(this).val());
+                            $("#allfilterid").append(ID + "-" + $(this).val() + ";");
+
+                        });
+
+
+                    })
+                </script>*@  
+            </div>
+            }
+         
+            
+
+        }
+         <p id="featuretobe" style="display:none"></p>
+            <div class="form-group ">
+                    <a id="featureConfirm" class="lgnsubmitt">تایید</a>
+                <script>
+                    $(document).ready(function () {
+                        var filter = "";
+                   
+                        $("#featureConfirm").click(function () {
+                            $("#featuretobe").text("");
+                           $("#allfeaturetext").text("");
+                            $("input.featureInput").each(function () {
+                                var id = $(this).attr('id');
+                                var text = $(this).val();
+                                $("#allfeaturetext").append(id + ":" + text + ";");
+                                
+                          })
+
+                        
+                           
+                            $('#featureModal').modal('toggle');
+
+                        })
+
+
+
+                    })
+                </script>
+
+                </div>
+    }
+
+}

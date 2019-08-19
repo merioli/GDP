@@ -1,0 +1,214 @@
+﻿@model  IEnumerable<GDPProject.ViewModel.HospitalDetail>
+
+@using System.Data.Entity
+
+
+@{
+    ViewBag.Title = "productdetail";
+    Layout = "~/Views/Shared/_LayoutPanelAdmin.cshtml";
+}
+@section scripts{
+    <script>
+        $("#createfeature").click(function () {
+
+            alert
+            var Hname = $("#Hname").val();
+            var Hostan = $("#Hostan").val();
+            var Hshahrestan = $("#Hshahrestan").val();
+            var address = $("#address").val();
+            var mohandes = $("#mohandes").val();
+            var phone = $("#phone").val();
+            var mahal = $("#mahal").val();
+            var ID = $("mainF optoin:selected").val();
+
+            if (Hname != "" & Hostan != "" & Hshahrestan != "" & address != "" & mohandes != "" & phone != "" & mahal != "") {
+
+                $.ajax({
+                    url: '/Admin/setDetailPost',
+                    dataType: 'html',
+                    data: {
+                        
+                        name: Hname,
+                        ostan: Hostan,
+                        sharestan: Hshahrestan,
+                        address: address,
+                        mohandes: mohandes,
+                        phone: phone,
+                        mahaleazmoon: mahal,
+                        
+
+                    },
+                    success: function (data) {
+
+                        window.location.reload();
+
+                    },
+                    error: function () {
+                        alert("خطا")
+                    }
+                });
+
+            }
+
+        })
+
+    </script>
+    <script>
+        $("#mainF").change(function () {
+            var mainf = $("#mainF").val();
+           
+                        var details = @Html.Raw(Json.Encode(Model))
+                            $.each(details, function (index, item) {
+                               
+                               
+                              //  mySelect.empty();
+                                if (item.ID === mainf) {
+                                   
+                                    $("#Hname").val(item.name);
+                                    $("#Hostan").val(item.ostan);
+                                    $("#Hshahrestan").val(item.sharestan);
+                                    $("#address").val(item.address);
+                                    $("#mohandes").val(item.mohandes);
+                                    $("#phone").val(item.phone);
+                                    $("#mahal").val(item.mahaleazmoon);
+                                   
+
+                                    //mySelect.append(
+                                    //    $('<option></option>').val(item.ID).html(text)
+                                    //);
+                                }
+                            })
+        })
+    </script>
+}
+<div id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+
+
+    <div class="holderofformgroup" style="direction: rtl;">
+
+
+
+        <div class=" rowholder" style="direction: rtl;text-align: right;padding: 20px;border: 1px solid #ddd;background-color: white;border-radius: 10px;">
+            <div class="row" style="padding-bottom: 20px; margin:0px">
+                <label style="padding-top:7px; margin-bottom:15px; font:bold; margin-left:20px" class="control-label component " for="first-name">
+                    مشخصات بیمارستان
+                </label>
+                @{ 
+                   List<SelectListItem> listofmainF = new List<SelectListItem>();
+                   if (Model != null)
+                   {
+                       foreach (var item in Model)
+
+                       {
+                           listofmainF.Add(new SelectListItem
+                           {
+                               Text = item.name +" "+ item.sharestan,
+                               Value = item.ID
+                           });
+
+
+                       }
+
+                   }
+                }
+                <div class="component ">
+                    @Html.DropDownList("mainF", listofmainF, "--انتخاب کنید--", new { id = "mainF", style = "width:100%; min-width:157px", @class = "DRPd form-control" })
+                </div>
+
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <label style="font:bold; min-width:70px ; margin:10px 0" class="control-label component " for="first-name">
+                        نام بیمارستان
+                    </label>
+                    <div class="component ">
+                        <input type="text" id="Hname" class="form-control" value="@Model.Last().name" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <label style="font:bold;min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        استان
+                    </label>
+                    <div class="component ">
+                        <input type="text" id="Hostan" class="form-control" value="@Model.Last().ostan" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        شهرستان
+                    </label>
+                    <div class="component ">
+                        <input type="text" id="Hshahrestan" class="form-control" value=@Model.Last().sharestan />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+
+                    <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        آدرس
+                    </label>
+                    <div class="component ">
+                        <input value=@Model.Last().address type="text" id="address" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        نام مهندس پزشک
+                    </label>
+                    <div class="component ">
+                        <input value=@Model.Last().mohandes type="text" id="mohandes" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <label style="font:bold;min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        تلفن
+                    </label>
+                    <div class="component ">
+                        <input value=@Model.Last().phone type="text" id="phone" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+
+                    <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        محل آزمون
+                    </label>
+                    <div class="component ">
+                        <input value=@Model.Last().mahaleazmoon type="text" id="mahal" class="form-control" />
+                    </div>
+                </div>
+
+
+                <div class="col-lg-3">
+                    <div class="component " style="direction:rtl; padding-top: 45px;">
+
+                        @* <button id="DEFcatok" class="btn btn-success" onclick="DEFcatokclicked(DEFcatok)">تایید</button>*@
+                        <button id="createfeature" class="btn btn-success">تایید</button>
+
+
+
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+
+
+    </div>
+
+    <div class="ln_solid"></div>
+</div>

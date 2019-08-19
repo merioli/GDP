@@ -1,0 +1,305 @@
+﻿@model GDPProject.ViewModel.PDFReportVM
+
+@{
+    ViewBag.Title = "allPartners";
+    Layout = "~/Views/Shared/_LayoutPanelAdmin.cshtml";
+}
+@section header {
+    <style>
+        .usersearch {
+            display: inline-block;
+            margin: 20px
+        }
+
+            .usersearch .lable {
+                padding: 10px;
+                margin-right: 10px;
+            }
+    </style>
+}
+@section scripts{
+    <script src="~/assets-admin/js/tooltips.js"></script>
+    <script>
+        $("#searchforpartner").click(function () {
+            var name = $("#name").val();
+            var percent = $("#percent").val();
+            var type = $("#typeList option:selected").text();
+            var status = $("#statusList option:selected").text();
+
+            $.ajax({
+                url: "/en/admin/getListOfPartner",
+                data: {
+                    name: name,
+                    percent: percent,
+                    type: type,
+                    status: status,
+                },
+                success: function (result) {
+                    $("#listholder").html(result);
+                }
+            });
+        })
+
+
+    </script>
+
+    <script>
+        $(".showdetail").click(function () {
+
+                                var id = $(this).attr("id");
+                                
+                                window.location.href = 'http://gdp.sup-ect.ir/ResultPDF/' + id + '.pdf';
+        })
+       
+
+    </script>
+    <script>
+        $("#createfeature").click(function () {
+           
+            var hospital = $("#hospitalList :selected").val();
+            var device = $("#diviceList :selected").val();
+            var position = $("#positionList :selected").val();
+            var status = $("#statusList :selected").val();
+            var mark = $("#mark").val();
+            var model = $("#model").val();
+            var serial = $("#serial").val();
+            var amval = $("#amval").val();
+
+            
+            $.ajax({
+                url: '/Admin/UpdatePdfList',
+                dataType: 'html',
+                data: {
+                    hospitalName: hospital,
+                    catID: device,
+                    position: position,
+                    status: status,
+                    model: model,
+                    mark: mark,
+                    serial: serial,
+                    amval: amval,
+
+
+                },
+                success: function (data) {
+                    
+                    $("#listholder").html(data);
+
+                },
+                error: function () {
+                    alert("خطا")
+                }
+            });
+
+        })
+
+    </script>
+
+}
+
+
+<!--partner search section  -->
+
+<div class="row">
+
+    <div class="col-12 col-lg-12 col-xl-12 grid-margin stretch-card">
+
+
+
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row" style="direction:rtl">
+                    <div class="col-lg-3" style="text-align:right">
+                        <label style="font:bold; min-width:70px ; margin:10px 0" class="control-label component " for="first-name">
+                            نام بیمارستان
+                        </label>
+                        <div class="component ">
+                            @Html.DropDownList("hospital", Model.HospitalItems, new { id = "hospitalList", @class = "form-control", style = "direction:rtl" })
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3" style="text-align:right">
+                        <label style="font:bold; min-width:70px ; margin:10px 0" class="control-label component " for="first-name">
+                            دستگاه
+                        </label>
+                        <div class="component ">
+                            @Html.DropDownList("device", Model.DeviceItems, "انتخاب کنید", new { id = "diviceList", @class = "form-control", style = "direction:rtl" })
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3" style="text-align:right">
+                        <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                            موقعیت
+                        </label>
+                        <div class="component ">
+                            @Html.DropDownList("position", Model.PositionItems, "انتخاب کنید", new { id = "positionList", @class = "form-control", style = "direction:rtl" })
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3" style="text-align:right">
+                        <label style="font:bold;min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                            وضعیت
+                        </label>
+                        <div class="component ">
+                            @{
+                                List<SelectListItem> listofStaus = new List<SelectListItem>();
+                                listofStaus.Add(new SelectListItem
+                                {
+                                    Text = "Passed",
+                                    Value = "Passed"
+                                });
+                                listofStaus.Add(new SelectListItem
+                                {
+                                    Text = "Limited",
+                                    Value = "Limited"
+                                });
+                                listofStaus.Add(new SelectListItem
+                                {
+                                    Text = "Failed",
+                                    Value = "Failed"
+                                });
+                            }
+
+                            @Html.DropDownList("status", listofStaus, "انتخاب کنید", new { id = "statusList", @class = "form-control", style = "direction:rtl" })
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3" style="text-align:right">
+                        <label style="font:bold;min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                            مارک
+                        </label>
+                        <div class="component ">
+                            <input type="text" id="mark" name="mark" class="form-control" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3" style="text-align:right">
+                        <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                            مدل
+                        </label>
+                        <div class="component ">
+                            <input type="text" id="model" name="model" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3" style="text-align:right">
+
+                        <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                            سریال
+                        </label>
+                        <div class="component ">
+                            <input type="text" id="serial" name="serial" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3" style="text-align:right">
+
+                        <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                            شماره اموال
+                        </label>
+                        <div class="component ">
+                            <input type="text" id="amval" name="amval" class="form-control" />
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3" style="text-align:right">
+                        <div class="component " style="direction:rtl; padding-top: 45px;">
+
+                            @* <button id="DEFcatok" class="btn btn-success" onclick="DEFcatokclicked(DEFcatok)">تایید</button>*@
+                            <button id="createfeature" class="btn btn-success">تایید</button>
+
+
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row" style="margin-top:50px">
+
+                    <div id="listholder" style="width:100%">
+                        <div class="col-lg-12">
+                            @{
+                                if (Model.list  != null)
+                                {
+                                    <div class="table-responsive mt-3">
+                                        <table class="table table-striped" style="direction: rtl;text-align: right;">
+                                            <thead>
+                                                <tr>
+                                                    <th>دستگاه</th>
+                                                    <th>مارک</th>
+                                                    <th>مدل</th>
+                                                    <th>سریال</th>
+                                                    <th>محل استقرار</th>
+                                                    <th>وضعیت</th>
+                                                    <th>اموال</th>
+                                                    <th>PDF</th>
+                                                    <th style="text-align: left">فعال</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.list)
+                                                {
+                                                    int index = Model.list.IndexOf(item);
+                                                    <tr>
+                                                        <td>@item.catID</td>
+                                                        <td>@item.mark</td>
+                                                        <td>@item.model</td>
+                                                        <td>@item.serial</td>
+                                                        <td>@item.position</td>
+                                                        <td>@item.status</td>
+                                                        <td>@item.amval</td>
+
+                                                        <td style="text-align:center;padding: 0px;width: 5%;">
+                                                            @{ 
+                                                                string path = "http://gdp.sup-ect.ir/ResultPDF/" + item.PDFTitle + ".pdf";
+                                                            }
+                                                            <label style="cursor:pointer" class="badge badge-success showdetail" id="@item.PDFTitle"><a href=@path></a>مشاهده</label>
+
+
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-check form-check-info">
+                                                                <label class="form-check-label">
+                                                                    @if (item.active == "true")
+                                                                    {
+                                                                        <input type="checkbox" class="form-check-input" checked="">
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <input type="checkbox" class="form-check-input">
+                                                                    }
+
+
+                                                                    <i class="input-helper"></i>
+                                                                </label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p style="padding:50px "> no item found</p>
+                                }
+                            }
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<a href="@Url.Action("partnerDetail","admin",new { partnerID = item.id})" class="btn btn-primary btn-block mb-2 btndetail"> detail</a>*@
+
+

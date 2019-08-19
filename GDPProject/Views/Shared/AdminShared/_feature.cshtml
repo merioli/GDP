@@ -1,0 +1,503 @@
+﻿@model GDPProject.Models.FeatureModel
+
+<br />
+<div id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+
+
+    <div class="holderofformgroup" style="direction: rtl;">
+
+        <div class="form-group rowholder" style="direction: rtl;text-align: right;padding: 20px;border: 1px solid #ddd;background-color: white;border-radius: 10px;">
+
+            <label style="margin-bottom:15px; width:100%; font:bold; margin-left:20px" class="control-label component" for="first-name">
+                ایجاد آزمایش با عنوان
+            </label>
+
+            <div class="component " style="display:inline-block;margin-left:30px">
+                <input type="text" id="headtitle"  class="form-control"/>
+            </div>
+
+
+
+
+
+
+            <div class="component " style="direction:rtl; display:inline-block">
+
+                @* <button id="DEFcatok" class="btn btn-success" onclick="DEFcatokclicked(DEFcatok)">تایید</button>*@
+                <button id="createHeadFeature" class="btn btn-success">تایید</button>
+                <script>
+                    $("#createHeadFeature").click(function () {
+
+                        var level1title = $("#headtitle").val();
+                        var catID = $("#maincat").val();
+                        var mainF = "0";
+
+
+
+                        if (level1title != "" & catID != "") {
+
+                            $.ajax({
+                                url: '/Admin/createFeature',
+                                dataType: 'html',
+                                data: {
+                                    level1title: level1title,
+                                    catID: catID,
+                                    mainF: mainF,
+                                    min: "-1",
+                                    max: "-1",
+                                    type: "",
+                                    page: "0",
+                                    value: "master",
+                                    lan: "",
+
+                                },
+                                success: function (data) {
+
+                                    $.ajax({
+                                        url: '/Admin/getfeature',
+                                        dataType: 'html',
+                                        data: {
+                                            catID: catID,
+
+                                        },
+                                        success: function (data) {
+                                            $("#featureholder").html(data);
+                                        },
+                                        error: function () {
+                                            alert("خطا")
+                                        }
+                                    });
+
+                                },
+                                error: function () {
+                                    alert("خطا")
+                                }
+                            });
+
+                        }
+
+                    })
+
+                </script>
+
+
+            </div>
+
+
+
+        </div>
+
+        <div class=" rowholder" style="direction: rtl;text-align: right;padding: 20px;border: 1px solid #ddd;background-color: white;border-radius: 10px;">
+            <div class="row" style="padding-bottom: 20px; margin:0px">
+                <label style="padding-top:7px; margin-bottom:15px; font:bold; margin-left:20px" class="control-label component " for="first-name">
+                    ایجاد فیلد جهت آزمایش
+                </label>
+                @{
+
+                    List<SelectListItem> listofmainF = new List<SelectListItem>();
+                    if (Model != null)
+                    {
+                        if (Model.featureData[0].mainFeatures != null)
+                        {
+
+                            foreach (var item in Model.featureData[0].mainFeatures)
+
+                            {
+                                listofmainF.Add(new SelectListItem
+                                {
+                                    Text = item.title,
+                                    Value = item.MasterID
+                                });
+
+
+                            }
+                        }
+
+                    }
+
+
+                }
+
+
+                <div class="component " >
+                    @Html.DropDownList("mainF", listofmainF, "--انتخاب کنید--", new { id = "mainF", style = "width:100%; min-width:157px", @class = "DRPd form-control" })
+                </div>
+               
+            </div>
+          
+
+            <div class="row" >
+                <div class="col-lg-3">
+                    <label style="font:bold; min-width:70px ; margin:10px 0" class="control-label component " for="first-name">
+                        عنوان
+                    </label>
+                    <div class="component ">
+                        <input type="text" id="level1title" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <label style="font:bold;min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        حداقل
+                    </label>
+                    <div class="component ">
+                        <input value="0" type="text" id="min" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        حداکثر
+                    </label>
+                    <div class="component ">
+                        <input value="0" type="text" id="max" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        صفحه
+                    </label>
+                    <div class="component ">
+                        <input value="0" type="text" id="page" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <label style="font:bold;min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        نوع فیلد
+                    </label>
+                    <div class="component ">
+                        <input value="0" type="text" id="type" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+
+                    <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        مقدار
+                    </label>
+                    <div class="component ">
+                        <input value="0" type="text" id="value" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+
+                    <label style="font:bold; min-width:70px; margin:10px 0" class="control-label component " for="first-name">
+                        زبان
+                    </label>
+                    <div class="component ">
+                        <input value="0" type="text" id="lan" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="component " style="direction:rtl; padding-top: 45px;">
+
+                        @* <button id="DEFcatok" class="btn btn-success" onclick="DEFcatokclicked(DEFcatok)">تایید</button>*@
+                        <button id="createfeature" class="btn btn-success">تایید</button>
+                        <script>
+                            $("#createfeature").click(function () {
+
+                                var level1title = $("#level1title").val();
+                                var catID = $("#maincat").val();
+                                var mainF = $("#mainF").val();
+                                var min = $("#min").val();
+                                var max = $("#max").val();
+                                var page = $("#page").val();
+                                var type = $("#type").val();
+                                var value = $("#value").val();
+                                var lan = $("#lan").val();
+
+
+                                if (level1title != "" & catID != "" & min != "" & max != "" & type != "" & page != "" & value != "" & lan != "") {
+
+                                    $.ajax({
+                                        url: '/Admin/createFeature',
+                                        dataType: 'html',
+                                        data: {
+                                            level1title: level1title,
+                                            catID: catID,
+                                            mainF: mainF,
+                                            min: min,
+                                            max: max,
+                                            type: type,
+                                            page: page,
+                                            value: value,
+                                            lan: lan,
+
+                                        },
+                                        success: function (data) {
+
+                                            $.ajax({
+                                                url: '/Admin/getfeature',
+                                                dataType: 'html',
+                                                data: {
+                                                    catID: catID,
+
+                                                },
+                                                success: function (data) {
+                                                    $("#featureholder").html(data);
+                                                },
+                                                error: function () {
+                                                    alert("خطا")
+                                                }
+                                            });
+
+                                        },
+                                        error: function () {
+                                            alert("خطا")
+                                        }
+                                    });
+
+                                }
+
+                            })
+
+                        </script>
+
+
+                    </div>
+                </div>
+
+
+            </div>
+           
+
+
+
+
+
+
+          
+
+
+
+        </div>
+
+
+    </div>
+
+    <div class="ln_solid"></div>
+</div>
+<br />
+<div id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+
+
+    <div class="holderofformgroup">
+        <div class="form-group rowholder" style="direction: rtl;text-align: right;padding: 20px;border: 1px solid #ddd;background-color: white;border-radius: 10px;">
+
+            <label style="width:100%; padding-bottom:15px; font:bold; margin-left:20px" class="control-label component" for="first-name">
+                حذف  آزمایش 
+            </label>
+
+            <div class="component " style="display:inline-block; margin-left:30px">
+                @Html.DropDownList("mainf", listofmainF, "نام آزمایش", new { id = "mainf", @class = "form-control DRPd" })
+            </div>
+
+            @*@{
+                List<SelectListItem> listofsubF = new List<SelectListItem>();
+
+
+
+
+            }
+
+
+            <div class="component " style="display:inline-block; margin-left:30px">
+                @Html.DropDownList("subf", listofsubF, " نام فیلد آزمایش", new { id = "subf", @class = "form-control DRPd" })
+            </div>*@
+
+
+
+
+
+            <div class="component " style="direction:rtl ; display:inline-block">
+
+                @* <button id="DEFcatok" class="btn btn-success" onclick="DEFcatokclicked(DEFcatok)">تایید</button>*@
+                <button id="deletefeature" class="btn btn-success">تایید</button>
+                <script>
+                    $("#deletefeature").click(function () {
+
+
+                        var mainf = $("#mainf").val();
+                       
+
+
+                        $.ajax({
+                            url: '/Admin/deleteFeature',
+                            dataType: 'html',
+                            data: {
+
+                                subf: "",
+                                mainf: mainf
+
+                            },
+                            success: function (data) {
+
+                                if (data === "subexist") {
+                                    toastr.options = {
+                                        "debug": false,
+                                        "positionClass": "toast-top-center",
+                                        "onclick": null,
+                                        "fadeIn": 300,
+                                        "fadeOut": 1000,
+                                        "timeOut": 5000,
+                                        "extendedTimeOut": 1000
+                                    }
+
+                                    toastr.error(' سرگروه مورد نظر دارای زیر گروه بوده و حذف نمی شود')
+                                }
+                                else {
+                                    $.ajax({
+                                        url: '/Admin/getfeature',
+                                        dataType: 'html',
+                                        data: {
+                                            catID: maincatdel,
+
+                                        },
+                                        success: function (data) {
+                                            $("#featureholder").html(data);
+                                        },
+                                        error: function () {
+                                            alert("خطا")
+                                        }
+                                    });
+                                }
+
+
+                            },
+                            error: function () {
+                                alert("خطا")
+                            }
+                        });
+
+                    })
+
+                </script>
+
+
+            </div>
+
+
+
+        </div>
+
+        <div class="form-group rowholder" style="direction: rtl;text-align: right;padding: 20px;border: 1px solid #ddd;background-color: white;border-radius: 10px;">
+
+            <label style="width:100%; padding-bottom:15px; font:bold; margin-left:20px" class="control-label component" for="first-name">
+                حذف  فیلد آزمایش
+            </label>
+
+            <div class="component " style="display:inline-block; margin-left:30px">
+                @Html.DropDownList("DelMasterList", listofmainF, "نام آزمایش", new { id = "DelMasterList", @class = "form-control DRPd" })
+            </div>
+
+            @{
+                List<SelectListItem> listofsubF = new List<SelectListItem>();
+
+
+
+
+            }
+
+
+            <div class="component " style="display:inline-block; margin-left:30px">
+                @Html.DropDownList("DelDetailList", listofsubF, " نام فیلد آزمایش", new { id = "DelDetailList", @class = "form-control DRPd" })
+            </div>
+
+
+
+
+
+            <div class="component " style="direction:rtl ; display:inline-block">
+
+                @* <button id="DEFcatok" class="btn btn-success" onclick="DEFcatokclicked(DEFcatok)">تایید</button>*@
+                <button id="deletedetail" class="btn btn-success">تایید</button>
+                <script>
+                    $("#DelMasterList").change(function () {
+                        $('#DelDetailList').empty();
+                        var mainf = $("#DelMasterList").val();
+                       
+                        var details = @Html.Raw(Json.Encode(Model.featureData.First().subFeatures))
+                            $.each(details, function (index, item) {
+                                var masterid = item.MasterID;
+                                var text = item.title;
+                                var mySelect = $('#DelDetailList');
+                              //  mySelect.empty();
+                                if (masterid === mainf) {
+                                   // alert(masterid);
+                                    mySelect.append(
+                                        $('<option></option>').val(item.ID).html(text)
+                                    );
+                                }
+                            })
+                    })
+                    $("#deletedetail").click(function () {
+
+
+                        var subf = $("#DelDetailList").val();
+                        var mainf = $("#DelMasterList").val();
+
+
+                        $.ajax({
+                            url: '/Admin/deleteFeature',
+                            dataType: 'html',
+                            data: {
+
+                                subf: subf,
+                                mainf: mainf
+
+                            },
+                            success: function (data) {
+
+                                if (data === "subexist") {
+                                    toastr.options = {
+                                        "debug": false,
+                                        "positionClass": "toast-top-center",
+                                        "onclick": null,
+                                        "fadeIn": 300,
+                                        "fadeOut": 1000,
+                                        "timeOut": 5000,
+                                        "extendedTimeOut": 1000
+                                    }
+
+                                    toastr.error(' سرگروه مورد نظر دارای زیر گروه بوده و حذف نمی شود')
+                                }
+                                else {
+                                    $.ajax({
+                                        url: '/Admin/getfeature',
+                                        dataType: 'html',
+                                        data: {
+                                            catID: maincatdel,
+
+                                        },
+                                        success: function (data) {
+                                            $("#featureholder").html(data);
+                                        },
+                                        error: function () {
+                                            alert("خطا")
+                                        }
+                                    });
+                                }
+
+
+                            },
+                            error: function () {
+                                alert("خطا")
+                            }
+                        });
+
+                    })
+
+                </script>
+
+
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <div class="ln_solid"></div>
+</div>
+<br />

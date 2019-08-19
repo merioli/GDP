@@ -1,0 +1,71 @@
+﻿@model GDPProject.ViewModel.PDFModelForReportList
+<div class="col-lg-12">
+    @{
+        if (Model.PDFmodelForReport != null)
+        {
+            <div class="table-responsive mt-3">
+                <table class="table table-striped" style="direction: rtl;text-align: right;">
+                    <thead>
+                        <tr>
+                            <th>دستگاه</th>
+                            <th>مارک</th>
+                            <th>مدل</th>
+                            <th>سریال</th>
+                            <th>محل استقرار</th>
+                            <th>وضعیت</th>
+                            <th>اموال</th>
+                            <th>PDF</th>
+                            <th style="text-align: left">فعال</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PDFmodelForReport)
+                        {
+                            int index = Model.PDFmodelForReport.IndexOf(item);
+                            <tr>
+                                <td>@item.catID</td>
+                                <td>@item.mark</td>
+                                <td>@item.model</td>
+                                <td>@item.serial</td>
+                                <td>@item.position</td>
+                                <td>@item.status</td>
+                                <td>@item.amval</td>
+
+                                <td style="text-align:center;padding: 0px;width: 5%;">
+                                    <label style="cursor:pointer" class="badge badge-success showdetail" id="@item.ID">مشاهده</label>
+
+
+                                </td>
+                                <td>
+                                    <div class="form-check form-check-info">
+                                        <label class="form-check-label">
+                                            @if (item.active == "true")
+                                            {
+                                                <input type="checkbox" class="form-check-input" checked="">
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" class="form-check-input">
+                                            }
+
+
+                                            <i class="input-helper"></i>
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p style="padding:50px "> no item found</p>
+        }
+    }
+
+</div>
