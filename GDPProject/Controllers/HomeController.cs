@@ -30,54 +30,99 @@ namespace GDPProject.Controllers
 
 
         string txtpath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sample.txt");
+        private static readonly Random random = new Random();
 
+        private static double RandomNumberBetween(double minValue, double maxValue)
+        {
+            var next = random.NextDouble();
+
+            return minValue + (next * (maxValue - minValue));
+        }
 
         public ActionResult Index()
         {
-            PrivateFontCollection private_fonts2 = new PrivateFontCollection();
-            string fontpath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fonts\\BNAZANIN.ttf");
-            private_fonts2.AddFontFile(fontpath);
+            double nashtiBadiAdi = RandomNumberBetween(57, 83);
+            double nashtiBadiAdiPluse = RandomNumberBetween(1, 7);
+            double nashtiBaditak = RandomNumberBetween(280, 470);
+            double nashtiBaditakPluse = RandomNumberBetween(10, 15);
+            int badane2 = (int)nashtiBaditak;
+            int badane3 = badane2 + 3;
+            int badane5 = (int)nashtiBaditak + (int)nashtiBaditakPluse;
+            int badane6 = badane5 + 3;
+            RootObject MODELFROMDATABASE = new RootObject();
 
-
-
-            string emptyNamePDF = "";
-            emptyNamePDF = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PDF/pumpEmpty.pdf");
-            var testFile2 = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), emptyNamePDF);
-            string newFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ResultPDF/result/title.pdf");
-            string finalFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ResultPDF/final.pdf");
-
-            Spire.Pdf.PdfDocument doc2 = new Spire.Pdf.PdfDocument();
-            doc2.LoadFromFile(testFile2);
-            float pageheight = 0;
-
-            foreach (PdfPageBase spipage in doc2.Pages)
+            using (var client = new WebClient())
             {
 
-               // string imagepath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "checked.png");
-                string imagepath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "unchecked.png");
-
-                Spire.Pdf.Graphics.PdfImage image = Spire.Pdf.Graphics.PdfImage.FromFile(imagepath);
-                float width = image.Width * 0.75f;
-                float height = image.Height * 0.75f;
-                spipage.Canvas.DrawImage(image, float.Parse("100"), float.Parse("100"), 20, 20);
-
-                //PdfTrueTypeFont iransanse = new PdfTrueTypeFont(fontpath, 11);
-                //PdfTrueTypeFont Nazanin = new PdfTrueTypeFont(new System.Drawing.Font(private_fonts2.Families[0], 22), true);
-                //PdfTrueTypeFont Arial = new PdfTrueTypeFont(new System.Drawing.Font("Arial", 9f), true);
-                //Spire.Pdf.Graphics.PdfFont font1 = new Spire.Pdf.Graphics.PdfFont(PdfFontFamily.TimesRoman, 9);
-                //Spire.Pdf.Graphics.PdfBrush brush = PdfBrushes.Black;
-                //PdfStringFormat format = new PdfStringFormat();
-                //SizeF size = Arial.MeasureString("aaaa", format);
-                //float Xposition = float.Parse("100") - size.Width;
-                //PointF position = new PointF(Xposition, float.Parse("100"));
-                //spipage.Canvas.DrawString("سلام حالت چطوره ", Nazanin, brush, position, new PdfStringFormat() { RightToLeft = true });
+                GlobalVariables.modelList = client.DownloadString("http://www.supectco.com/webs/GDP/Admin/getListOfFeaterForApp.php?CatID=1");
 
 
             }
-            doc2.SaveToFile(newFile, FileFormat.PDF);
-            doc2.Close();
-            string txtpath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sample.txt");
-            string mymodel = System.IO.File.ReadAllText(txtpath);
+            MODELFROMDATABASE = JsonConvert.DeserializeObject<RootObject>(GlobalVariables.modelList);
+
+            foreach (var item in MODELFROMDATABASE.featurDataDetail.Where(x => x.referer != ""))
+            {
+               // model chosen = mymodel.Where(x => x.title == item.title && x.page == item.page).SingleOrDefault();
+                System.IO.File.AppendAllText(txtpath, " " + item.title);
+                if (double.Parse(item.value) >= item.min && double.Parse(item.value) <= item.max)
+                {
+                   // item.Where(x => x.title == item.referer).SingleOrDefault().value = "Passed";
+                }
+                else
+                {
+                   // mymodel.Where(x => x.title == item.referer).SingleOrDefault().value = "Failed";
+                }
+
+
+
+            }
+            List<FeaturDataDetail> MODELFROMDATABASE2 = MODELFROMDATABASE.featurDataDetail.Where(x => x.referer != "").ToList();
+
+
+            //PrivateFontCollection private_fonts2 = new PrivateFontCollection();
+            //string fontpath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fonts\\BNAZANIN.ttf");
+            //private_fonts2.AddFontFile(fontpath);
+
+
+
+            //string emptyNamePDF = "";
+            //emptyNamePDF = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PDF/pumpEmpty.pdf");
+            //var testFile2 = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), emptyNamePDF);
+            //string newFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ResultPDF/result/title.pdf");
+            //string finalFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ResultPDF/final.pdf");
+
+            //Spire.Pdf.PdfDocument doc2 = new Spire.Pdf.PdfDocument();
+            //doc2.LoadFromFile(testFile2);
+            //float pageheight = 0;
+
+            //foreach (PdfPageBase spipage in doc2.Pages)
+            //{
+
+            //   // string imagepath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "checked.png");
+            //    string imagepath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "unchecked.png");
+
+            //    Spire.Pdf.Graphics.PdfImage image = Spire.Pdf.Graphics.PdfImage.FromFile(imagepath);
+            //    float width = image.Width * 0.75f;
+            //    float height = image.Height * 0.75f;
+            //    spipage.Canvas.DrawImage(image, float.Parse("100"), float.Parse("100"), 20, 20);
+
+            //    //PdfTrueTypeFont iransanse = new PdfTrueTypeFont(fontpath, 11);
+            //    //PdfTrueTypeFont Nazanin = new PdfTrueTypeFont(new System.Drawing.Font(private_fonts2.Families[0], 22), true);
+            //    //PdfTrueTypeFont Arial = new PdfTrueTypeFont(new System.Drawing.Font("Arial", 9f), true);
+            //    //Spire.Pdf.Graphics.PdfFont font1 = new Spire.Pdf.Graphics.PdfFont(PdfFontFamily.TimesRoman, 9);
+            //    //Spire.Pdf.Graphics.PdfBrush brush = PdfBrushes.Black;
+            //    //PdfStringFormat format = new PdfStringFormat();
+            //    //SizeF size = Arial.MeasureString("aaaa", format);
+            //    //float Xposition = float.Parse("100") - size.Width;
+            //    //PointF position = new PointF(Xposition, float.Parse("100"));
+            //    //spipage.Canvas.DrawString("سلام حالت چطوره ", Nazanin, brush, position, new PdfStringFormat() { RightToLeft = true });
+
+
+            //}
+            //doc2.SaveToFile(newFile, FileFormat.PDF);
+            //doc2.Close();
+            //string txtpath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sample.txt");
+            //string mymodel = System.IO.File.ReadAllText(txtpath);
 
             ////  mymodel = "{\"id\":1927,\"catID\":1,\"formID\":25,\"title\":\"مشخصات متقاضی\",\"value\":\"master\",\"min\":-1,\"max\":-1,\"type\":0,\"page\":\"1\",\"font\":\"\",\"x\":\"0\",\"y\":\"0\",\"masterID\":143},{\"id\":1928,\"catID\":1,\"formID\":25,\"title\":\"hospital name\",\"value\":\"15\",\"min\":-1,\"max\":-1,\"type\":0,\"page\":\"1\",\"font\":\"P\",\"x\":\"0\",\"y\":\"0\",\"masterID\":143},{\"id\":1929,\"catID\":1,\"formID\":25,\"title\":\"mohandes\",\"value\":\"\",\"min\":-1,\"max\":-1,\"type\":0,\"page\":\"1\",\"font\":\"P\",\"x\":\"0\",\"y\":\"0\",\"masterID\":143}";
 
@@ -142,7 +187,7 @@ namespace GDPProject.Controllers
         }
         public ActionResult getModel(FormModel postedModel)
         {
-           
+            RootObject MODELFROMDATABASE = new RootObject();
             PDFModel PDFmdoel = new PDFModel()
             {
                 DuraionTime = postedModel.formfillingtime,
@@ -172,8 +217,21 @@ namespace GDPProject.Controllers
 
                 }
             }
+            //if(GlobalVariables.modelList != "")
+            //{
+
+
+            //}
+           
+
+            using (var client = new WebClient())
+            {
+                GlobalVariables.modelList = client.DownloadString("http://www.supectco.com/webs/GDP/Admin/getListOfFeaterForApp.php?CatID=1");
+            }
+          
             try
             {
+                
                 string json3 = "";
                 using (var client = new WebClient())
                 {
@@ -215,12 +273,15 @@ namespace GDPProject.Controllers
             string id = "";
             try
             {
+                MODELFROMDATABASE = JsonConvert.DeserializeObject<RootObject>(GlobalVariables.modelList);
+                System.IO.File.AppendAllText(txtpath, " " + MODELFROMDATABASE.featurDataDetail.Count().ToString());
+
                 string srt = postedModel.model;
 
 
                 //  string txtpath2 = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sample2.txt");
-                System.IO.File.AppendAllText(txtpath, String.Empty);
-                System.IO.File.AppendAllText(txtpath, srt);
+                //System.IO.File.AppendAllText(txtpath, String.Empty);
+                //System.IO.File.AppendAllText(txtpath, srt);
 
 
 
@@ -299,8 +360,6 @@ namespace GDPProject.Controllers
                             PDFmdoel.position = PDFmdoel.position + item.value;
                         }
                         PDFmdoel.serial = mymodel.Where(x => x.page == "1" && x.title == "serial").FirstOrDefault().value;
-
-
                         PDFmdoel.amval = mymodel.Where(x => x.page == "1" && x.title == "amvaal").FirstOrDefault().value;
                         
                         if (mymodel.Where(x => x.page == "1" && x.title == "Passed").FirstOrDefault() != null)
@@ -324,6 +383,196 @@ namespace GDPProject.Controllers
                                 PDFmdoel.status = "Failed";
                             }
                         }
+                        System.IO.File.WriteAllText(txtpath, "enter foreach");
+                       
+                        foreach (var item in MODELFROMDATABASE.featurDataDetail.Where(x=>x.referer != ""))
+                        {
+                            model chosen = mymodel.Where(x => x.title == item.title && x.page == item.page).SingleOrDefault();
+                            System.IO.File.AppendAllText(txtpath, " " + item.title);
+                            if(item.max == -1 && item.min != -1)
+                            {
+                                if (double.Parse(chosen.value) >= item.min)
+                                {
+                                    mymodel.Where(x => x.title == item.referer).SingleOrDefault().value = "Passed";
+                                }
+                                else
+                                {
+                                    mymodel.Where(x => x.title == item.referer).SingleOrDefault().value = "Failed";
+                                }
+                            }
+                            else if (item.max != -1 && item.min == -1)
+                            {
+                                if ( double.Parse(chosen.value) <= item.max)
+                                {
+                                    mymodel.Where(x => x.title == item.referer).SingleOrDefault().value = "Passed";
+                                }
+                                else
+                                {
+                                    mymodel.Where(x => x.title == item.referer).SingleOrDefault().value = "Failed";
+                                }
+                            }
+                            else
+                            {
+                                if (double.Parse(chosen.value) >= item.min && double.Parse(chosen.value) <= item.max)
+                                {
+                                    mymodel.Where(x => x.title == item.referer).SingleOrDefault().value = "Passed";
+                                }
+                                else
+                                {
+                                    mymodel.Where(x => x.title == item.referer).SingleOrDefault().value = "Failed";
+                                }
+                            }
+                            
+                            
+
+
+                        }
+
+
+                        string flow10 = mymodel.Where(x => x.title == "flow10").FirstOrDefault().value;
+                        if (flow10 != "")
+                        {
+                            mymodel.Where(x => x.title == "error10").FirstOrDefault().value = Math.Round(((decimal.Parse(flow10) - 10) * 10), 2).ToString().Replace("-", "");
+                        }
+
+                        string flow50 = mymodel.Where(x => x.title == "flow50").FirstOrDefault().value;
+                        if (flow50 != "")
+                        {
+                            mymodel.Where(x => x.title == "error50").FirstOrDefault().value = Math.Round(((decimal.Parse(flow50) - 50) * 2), 2).ToString().Replace("-", "");
+                        }
+
+                        string flow100 = mymodel.Where(x => x.title == "flow100").FirstOrDefault().value;
+                        if (flow100 != "")
+                        {
+                            mymodel.Where(x => x.title == "error100").FirstOrDefault().value = Math.Round((decimal.Parse(flow100) - 100), 2).ToString().Replace("-", "");
+                        }
+                        //ایمنی
+
+
+                        if (mymodel.Where(x => x.title == "resmonfas").FirstOrDefault().value == "Passed" && mymodel.Where(x => x.title == "class").FirstOrDefault().value != "CLASS II")
+                        {
+                            mymodel.Where(x => x.title == "monfasel").FirstOrDefault().value = Math.Round(RandomNumberBetween(0.5, 0.1),1).ToString();
+                        }
+                        if (mymodel.Where(x => x.title == "resmotas").FirstOrDefault().value == "Passed" && mymodel.Where(x => x.title == "class").FirstOrDefault().value != "CLASS II")
+                        {
+                            mymodel.Where(x => x.title == "motasel").FirstOrDefault().value = Math.Round(RandomNumberBetween(1.6, 0.2),1).ToString();
+                        }
+
+
+                        if ( mymodel.Where(x => x.title == "class").FirstOrDefault().value != "CLASS II")
+                        {
+                            int adi =(int) RandomNumberBetween(4600, 4950);
+                            int pluse = (int)RandomNumberBetween(23, 47);
+                            int tak = (int)RandomNumberBetween(7200, 9700);
+                            int takpluse =(int) RandomNumberBetween(180, 280);
+                            if (mymodel.Where(x => x.title == "res12").FirstOrDefault().value == "Passed")
+                            {
+                                mymodel.Where(x => x.title == "nashti1").FirstOrDefault().value = ((int)adi).ToString();
+                                mymodel.Where(x => x.title == "nashti2").FirstOrDefault().value = ((int)tak).ToString();
+                            }
+                            if (mymodel.Where(x => x.title == "res34").FirstOrDefault().value == "Passed")
+                            {
+                                mymodel.Where(x => x.title == "nashti3").FirstOrDefault().value = ((int)(adi + pluse)).ToString();
+                                mymodel.Where(x => x.title == "nashti4").FirstOrDefault().value = ((int)(tak + takpluse)).ToString();
+
+                            }
+                        }
+
+                        int nashtiBadiAdi =(int)RandomNumberBetween(57, 83);
+                        int nashtiBadiAdiPluse = (int)RandomNumberBetween(1, 7);
+                        int nashtiBaditak = (int)RandomNumberBetween(280, 470);
+                        int nashtiBaditakPluse = (int)RandomNumberBetween(10, 15);
+
+                        int badane2 = (int)nashtiBaditak;
+                        int badane3 = badane2 + 3;
+                        int badane5 = (int)nashtiBaditak + (int)nashtiBaditakPluse;
+                        int badane6 = badane5 + 3;
+
+                        if (mymodel.Where(x => x.title == "res123" && x.page == "4").FirstOrDefault().value == "Passed")
+                        {
+                            mymodel.Where(x => x.title == "badane1").FirstOrDefault().value = ((int)nashtiBadiAdi + (int)nashtiBadiAdiPluse).ToString();
+                            mymodel.Where(x => x.title == "badane2").FirstOrDefault().value = badane2.ToString();
+                            mymodel.Where(x => x.title == "badane3").FirstOrDefault().value = badane3.ToString();
+                        }
+                        if (mymodel.Where(x => x.title == "res456" && x.page == "4").FirstOrDefault().value == "Passed")
+                        {
+                            mymodel.Where(x => x.title == "badane4").FirstOrDefault().value = ((int)nashtiBadiAdi + (2* (int)nashtiBadiAdiPluse)).ToString();
+                            mymodel.Where(x => x.title == "badane5").FirstOrDefault().value = badane5.ToString();
+                            mymodel.Where(x => x.title == "badane6").FirstOrDefault().value = badane6.ToString();
+                        }
+                        if (mymodel.Where(x => x.title == "res7" && x.page == "4").FirstOrDefault().value == "Passed")
+                        {
+                            mymodel.Where(x => x.title == "badane7").FirstOrDefault().value = ((int)nashtiBadiAdi).ToString();
+                        }
+
+                        int nashtiBadiAdi2 =(int) RandomNumberBetween(57, 83);
+                        int nashtiBadiAdiPluse2 =(int) RandomNumberBetween(1, 7);
+                        int nashtiBaditak2 =(int) RandomNumberBetween(280, 470);
+                        int nashtiBaditakPluse2 =(int) RandomNumberBetween(10, 15);
+                        int ptp2 = (int)nashtiBaditak2;
+                        int ptp3 = ptp2 + 3;
+                        int ptp5 = (int)nashtiBaditak2 + (int)nashtiBaditakPluse2;
+                        int ptp6 = ptp5 + 3;
+
+                        if (mymodel.Where(x => x.title == "res123" && x.page == "5").FirstOrDefault().value == "Passed")
+                        {
+                            mymodel.Where(x => x.title == "ptp1").FirstOrDefault().value = ((int)nashtiBadiAdi2 + nashtiBadiAdiPluse2).ToString();
+                            mymodel.Where(x => x.title == "ptp2").FirstOrDefault().value = ptp2.ToString();
+                            mymodel.Where(x => x.title == "ptp3").FirstOrDefault().value = ptp3.ToString();
+                        }
+                        if (mymodel.Where(x => x.title == "res456" && x.page == "5").FirstOrDefault().value == "Passed")
+                        {
+                            mymodel.Where(x => x.title == "ptp4").FirstOrDefault().value = ((int)nashtiBadiAdi2 + (2 * nashtiBadiAdiPluse2)).ToString();
+                            mymodel.Where(x => x.title == "ptp5").FirstOrDefault().value = ptp5.ToString();
+                            mymodel.Where(x => x.title == "ptp6").FirstOrDefault().value =  ptp6.ToString();
+                        }
+                        if (mymodel.Where(x => x.title == "res7" && x.page == "5").FirstOrDefault().value == "Passed")
+                        {
+                            mymodel.Where(x => x.title == "ptp7").FirstOrDefault().value = ((int)nashtiBadiAdi2).ToString();
+                        }
+
+
+
+
+
+                        if (mymodel.Where(x => x.title == "class").FirstOrDefault().value == "CLASS II")
+                        {
+                            mymodel.Where(x => x.title == "monfasel").FirstOrDefault().value = "----";
+                            mymodel.Where(x => x.title == "motasel").FirstOrDefault().value = "----";
+                            mymodel.Where(x => x.title == "nashti1").FirstOrDefault().value = "----";
+                            mymodel.Where(x => x.title == "nashti2").FirstOrDefault().value = "----";
+                            mymodel.Where(x => x.title == "nashti3").FirstOrDefault().value = "----";
+                            mymodel.Where(x => x.title == "nashti4").FirstOrDefault().value = "----";
+                            mymodel.Where(x => x.title == "resmonfas").FirstOrDefault().value = "Not Checked";
+                            mymodel.Where(x => x.title == "resmotas").FirstOrDefault().value = "Not Checked";
+                            mymodel.Where(x => x.title == "res12").FirstOrDefault().value = "Not Checked";
+                            mymodel.Where(x => x.title == "res34").FirstOrDefault().value = "Not Checked";
+
+                            
+                        }
+                        else
+                        {
+                            if(mymodel.Where(x => x.title == "kablbargh").FirstOrDefault().value == "غیر قابل انفصال")
+                            {
+                                mymodel.Where(x => x.title == "monfasel").FirstOrDefault().value = "----";
+                                mymodel.Where(x => x.title == "resmonfas").FirstOrDefault().value = "Not Checked";
+                            }
+                            else
+                            {
+                                mymodel.Where(x => x.title == "motasel").FirstOrDefault().value = "----";
+                                mymodel.Where(x => x.title == "resmotas").FirstOrDefault().value = "Not Checked";
+                            }
+
+
+                        }
+
+
+
+
+
+
+
+
                     }
                     List<model> pageFieldes = mymodel.Where(x => x.page == (index + 1).ToString()).ToList();
                     pageheight = spipage.Size.Height;
@@ -332,6 +581,7 @@ namespace GDPProject.Controllers
                     foreach (var item in pageFieldes)
                     {
 
+                        
 
                         PdfTrueTypeFont Arial = new PdfTrueTypeFont(new System.Drawing.Font("Arial", 10f), true);
                         PdfTrueTypeFont Arial9 = new PdfTrueTypeFont(new System.Drawing.Font("Arial", 9f), true);

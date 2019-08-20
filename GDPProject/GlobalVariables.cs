@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GDPProject.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +8,7 @@ namespace GDPProject
 {
     public class GlobalVariables
     {
+        public static string modelList = "";
         public static string name = "";
         public static string ostan = "";
         public static string phone = "";

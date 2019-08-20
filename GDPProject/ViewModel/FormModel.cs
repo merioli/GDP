@@ -35,6 +35,25 @@ namespace GDPProject.ViewModel
         public string x { get; set; }
         public string y { get; set; }
         public int masterID { get; set; }
+        public string referer { get; set; }
 
+    }
+    public class FeaturDataDetail
+    {
+        public string title { get; set; }
+        public string value { get; set; }
+        public double min { get; set; }
+        public double max { get; set; }
+        public int type { get; set; }
+        public string page { get; set; }
+        public string font { get; set; }
+        public string x { get; set; }
+        public string y { get; set; }
+        public int masterID { get; set; }
+        public string referer { get; set; }
+    }
+    public class RootObject
+    {
+        public List<FeaturDataDetail> featurDataDetail { get; set; }
     }
 }
